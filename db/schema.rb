@@ -10,7 +10,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_06_09_211134) do
+ActiveRecord::Schema.define(version: 2021_06_10_022326) do
+
+  create_table "push_settings", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.integer "push_day", null: false
+    t.string "push_time", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["user_id"], name: "index_push_settings_on_user_id"
+  end
 
   create_table "users", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
     t.string "line_user_id", null: false
@@ -18,4 +27,5 @@ ActiveRecord::Schema.define(version: 2021_06_09_211134) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  add_foreign_key "push_settings", "users"
 end
