@@ -24,12 +24,40 @@ class LineBotController < ApplicationController
           xml = open( url ).read.toutf8
           doc = REXML::Document.new(xml)
           xpath = 'weatherdata/forecast/time[1]/'
-          now_wearther = doc.elements[xpath + 'symbol'].attributes['name']
-          
+          wearther = doc.elements[xpath + 'symbol'].attributes['name']
+          temp = doc.elements[xpath + 'temperature'].attributes['value']
+          humidity = doc.elements[xpath + 'humidity'].attributes['value']
           case event.message['text']
-          when /.*(今日の予報).*/
-            push = "今日の予報は、\n#{now_wearther}"
+          when  /.*(今日の予報).*/
+            if wearther = /.*(clear sky|few clouds|scattered clouds|broken clouds|overcast clouds).*/ && temp >= 25.to_s && humidity >= 65.to_s
+              push = "一日中気温が高いため汗で髪がうねるかもしれないです。\n発汗対策をしっかり行いましょう。\n\nまた、湿気が多いので、うねりが出やすくスタイリングが崩れやすいです。\n外出する際はアイロンとヘアスプレーでしっかりスタイリングしましょう！"
+            elsif wearther = /.*(clear sky|few clouds|scattered clouds|broken clouds|overcast clouds).*/ && temp >= 25.to_s && humidity < 65.to_s
+              push =  "湿度はそこまで高くありませんが、一日中気温が高いため汗で髪がうねるかもしれないです。\n発汗対策をしっかり行いましょう!"
+            elsif wearther = /.*(clear sky|few clouds|scattered clouds|broken clouds|overcast clouds).*/ && temp < 25.to_s && humidty >= 65.to_s
+              push = "湿気が多いのでうねりが出やすくスタイリングが崩れやすいです。\n外出する際はアイロンとヘアスプレーでしっかりスタイリングしましょう!"
+            elsif wearther = /.*(clear sky|few clouds|scattered clouds|broken clouds|overcast clouds).*/ && temp < 25.to_s && humidity < 65.to_s && humidity > 50.to_s
+              push =  "今日は髪のうねりが出にくく髪がまとまりやすい天気です！\n思いっきりスタイリングを楽しみましょう。"
+            elsif wearther = /.*(clear sky|few clouds|scattered clouds|broken clouds|overcast clouds).*/ && temp < 25.to_s && humidity <= 50.to_s
+              push = "くせは気になりませんが湿度が低く乾燥や静電気で髪の毛が膨張したり摩擦でキューティクルが剥がれて髪の毛がパサパサになりやすいです。\nスタイリングする際は保湿を心がけましょう。"
+            elsif weather = /.*(rain|thunderstorm|drizzle).*/ && temp >= 25.to_s && humidity >= 65.to_s
+              push = "汗、雨、湿気で髪がまとまらず、アイロンやヘアスプレーを使ってもすぐ崩れてしまうかもしれません。\nこういう日が続く場合は思い切って縮毛矯正をかけるのもいいいいかも。"
+            elsif weather = /.*(rain|thunderstorm|drizzle).*/ && temp >= 25.to_s && humidity < 65.to_s 
+              push = "湿気は気になりませんが、汗と雨で前髪などが崩れるかもしれません。\n発汗対策もそうですが、外出する際はアイロンとヘアスプレーでしっかりスタイリングしましょう!"
+            elsif weather = /.*(rain|thunderstorm|drizzle).*/ && temp < 25.to_s && humidity >= 65.to_s
+              push = "雨、湿気で髪がまとまらず、アイロンやヘアスプレーを使ってもすぐ崩れてしまうかもしれません。\nこういう日が続く場合は思い切って縮毛矯正をかけるのもいいいいかも。"
+            elsif weather = /.*(rain|thunderstorm|drizzle).*/ && temp < 25.to_s && humidity < 65.to_s && humidity > 50.to_s
+              push =  "湿気はそこまで気になりませんが雨に当たってヘアスタイルが崩れないようにアイロンとヘアスプレーでしっかりスタイリングしましょう!"
+            elsif weather =  /.*(rain|thunderstorm|drizzle).*/ && temp < 25.to_s && humidity <= 50.to_s
+              push = "乾燥と雨で髪がまとまらない可能性が高いです。\nスタイリングと保湿をしっかり行いましょう"
+            elsif weather =  /.*(snow).*/
+              push = "現在地の天気は雪です\u{2744}\n\n現在の気温は#{now_temp}℃です\u{1F321}"
+            elsif weather = /.*(fog|mist|Haze).*/
+              push = "現在地では霧が発生しています\u{1F32B}\n\n現在の気温は#{now_temp}℃です\u{1F321}"
+            else
+              push = "現在地では何かが発生していますが、\nご自身でお確かめください。\u{1F605}\n\n現在の気温は#{now_temp}℃です\u{1F321}"
+            end
           end
+        end
           message = {
             type: 'text',
             text: push
@@ -43,7 +71,6 @@ class LineBotController < ApplicationController
         when Line::Bot::Event::Unfollow
           line_user_id = event['source']['userId']
           User.find_by(line_user_id: line_user_id).destroy
-        end
       end
     end
     head :ok
