@@ -30,11 +30,11 @@ class LineBotController < ApplicationController
           case event.message['text']
           when  /.*(今日の予報).*/
             if wearther = /.*(clear sky|few clouds|scattered clouds|broken clouds|overcast clouds).*/ && temp >= 25.to_s && humidity >= 65.to_s
-              push = "一日中気温が高いため汗で髪がうねるかもしれないです。\n発汗対策をしっかり行いましょう。\n\nまた、湿気が多いので、うねりが出やすくスタイリングが崩れやすいです。\n外出する際はアイロンとヘアスプレーでしっかりスタイリングしましょう！"
+              push = "一日中暑く、汗や湿気でくせがでやすいです。\nスタイリングもそうですが発汗対策をしっかり行いましょう！"
             elsif wearther = /.*(clear sky|few clouds|scattered clouds|broken clouds|overcast clouds).*/ && temp >= 25.to_s && humidity < 65.to_s
-              push =  "湿度はそこまで高くありませんが、一日中気温が高いため汗で髪がうねるかもしれないです。\n発汗対策をしっかり行いましょう!"
+              push =  "湿度はそこまで高くありませんが、一日中気温が高いため汗でくせが出てしまいます。\n発汗対策をしっかり行いましょう!"
             elsif wearther = /.*(clear sky|few clouds|scattered clouds|broken clouds|overcast clouds).*/ && temp < 25.to_s && humidty >= 65.to_s
-              push = "湿気が多いのでうねりが出やすくスタイリングが崩れやすいです。\n外出する際はアイロンとヘアスプレーでしっかりスタイリングしましょう!"
+              push = "湿気が多いのでくせが出やすくスタイリングが崩れやすいです。\n外出する際はアイロンとヘアスプレーでしっかりスタイリングしましょう!"
             elsif wearther = /.*(clear sky|few clouds|scattered clouds|broken clouds|overcast clouds).*/ && temp < 25.to_s && humidity < 65.to_s && humidity > 50.to_s
               push =  "今日は髪のうねりが出にくく髪がまとまりやすい天気です！\n思いっきりスタイリングを楽しみましょう。"
             elsif wearther = /.*(clear sky|few clouds|scattered clouds|broken clouds|overcast clouds).*/ && temp < 25.to_s && humidity <= 50.to_s
