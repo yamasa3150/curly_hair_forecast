@@ -1,0 +1,2 @@
+class PushSettingsController < ApplicationController
+end
