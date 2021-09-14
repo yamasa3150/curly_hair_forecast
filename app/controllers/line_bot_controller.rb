@@ -24,20 +24,20 @@ class LineBotController < ApplicationController
           xml = open( url ).read.toutf8
           doc = REXML::Document.new(xml)
           xpath = 'weatherdata/forecast/time[1]/'
-          wearther = doc.elements[xpath + 'symbol'].attributes['name']
+          weather = doc.elements[xpath + 'symbol'].attributes['name']
           temp = doc.elements[xpath + 'temperature'].attributes['value']
           humidity = doc.elements[xpath + 'humidity'].attributes['value']
           case event.message['text']
           when  /.*(今日の予報).*/
-            if wearther = /.*(clear sky|few clouds|scattered clouds|broken clouds|overcast clouds).*/ && temp >= 25.to_s && humidity >= 65.to_s
+            if weather = /.*(clear sky|few clouds|scattered clouds|broken clouds|overcast clouds).*/ && temp >= 25.to_s && humidity >= 65.to_s
               push = "一日中暑く、汗や湿気でくせがでやすいです。\nスタイリングもそうですが発汗対策をしっかり行いましょう！"
-            elsif wearther = /.*(clear sky|few clouds|scattered clouds|broken clouds|overcast clouds).*/ && temp >= 25.to_s && humidity < 65.to_s
+            elsif weather = /.*(clear sky|few clouds|scattered clouds|broken clouds|overcast clouds).*/ && temp >= 25.to_s && humidity < 65.to_s
               push =  "湿度はそこまで高くありませんが、一日中気温が高いため汗でくせが出てしまいます。\n発汗対策をしっかり行いましょう!"
-            elsif wearther = /.*(clear sky|few clouds|scattered clouds|broken clouds|overcast clouds).*/ && temp < 25.to_s && humidty >= 65.to_s
+            elsif weather = /.*(clear sky|few clouds|scattered clouds|broken clouds|overcast clouds).*/ && temp < 25.to_s && humidity >= 65.to_s
               push = "湿気が多いのでくせが出やすくスタイリングが崩れやすいです。\n外出する際はアイロンとヘアスプレーでしっかりスタイリングしましょう!"
-            elsif wearther = /.*(clear sky|few clouds|scattered clouds|broken clouds|overcast clouds).*/ && temp < 25.to_s && humidity < 65.to_s && humidity > 50.to_s
+            elsif weather = /.*(clear sky|few clouds|scattered clouds|broken clouds|overcast clouds).*/ && temp < 25.to_s && humidity < 65.to_s && humidity > 50.to_s
               push =  "今日は髪のうねりが出にくく髪がまとまりやすい天気です！\n思いっきりスタイリングを楽しみましょう。"
-            elsif wearther = /.*(clear sky|few clouds|scattered clouds|broken clouds|overcast clouds).*/ && temp < 25.to_s && humidity <= 50.to_s
+            elsif weather = /.*(clear sky|few clouds|scattered clouds|broken clouds|overcast clouds).*/ && temp < 25.to_s && humidity <= 50.to_s
               push = "くせは気になりませんが湿度が低く乾燥や静電気で髪の毛が膨張したり摩擦でキューティクルが剥がれて髪の毛がパサパサになりやすいです。\nスタイリングする際は保湿を心がけましょう。"
             elsif weather = /.*(rain|thunderstorm|drizzle).*/ && temp >= 25.to_s && humidity >= 65.to_s
               push = "汗、雨、湿気で髪がまとまらず、アイロンやヘアスプレーを使ってもすぐ崩れてしまうかもしれません。\nこういう日が続く場合は思い切って縮毛矯正をかけるのもいいいいかも。"
