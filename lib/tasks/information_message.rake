@@ -48,8 +48,7 @@ namespace :information_message do
       type: 'text',
       text: push
     }
-    User.all.each do |user|
-      client.push_message(user.line_user_id, message)
-    end
+    response = client.push_message(ENV["LINE_CHANNEL_USER_ID"], message)
+    p response
   end
 end
